@@ -6,6 +6,7 @@ import {
     deleteUserUseCase,
     addUserUseCase,
     editUserUseCase,
+    loginUserUseCase,
 } from './use-cases';
 import UserRepository from './user.repository';
 
@@ -21,10 +22,7 @@ export default class UserController {
             const users = await getUsersUseCase(this.repository);
             res.status(200).json(users);
         } catch (err) {
-            const {
-                message,
-            } = err;
-            res.status(400).json({ message });
+            this.returnError(err, res, 400);
         }
     }
 
@@ -34,10 +32,7 @@ export default class UserController {
             const user = await getUserUseCase(this.repository, userId);
             res.status(200).json(user);
         } catch (err) {
-            const {
-                message,
-            } = err;
-            res.status(400).json({ message });
+            this.returnError(err, res, 400);
         }
     }
 
@@ -47,10 +42,7 @@ export default class UserController {
             const result = await deleteUserUseCase(this.repository, userId);
             res.status(200).json(result);
         } catch (err) {
-            const {
-                message,
-            } = err;
-            res.status(400).json({ message });
+            this.returnError(err, res, 400);
         }
     }
 
@@ -60,21 +52,20 @@ export default class UserController {
                 email,
                 firstName,
                 lastName,
+                password,
             } = req.body;
 
             const userModel: User = {
                 email,
                 firstName,
                 lastName,
+                password,
             };
             
             const user = await addUserUseCase(this.repository, userModel);
             res.status(201).json(user);
         } catch (err) {
-            const {
-                message,
-            } = err;
-            res.status(400).json({ message });
+            this.returnError(err, res, 400);
         }
     }
 
@@ -90,10 +81,27 @@ export default class UserController {
             const user = await editUserUseCase(this.repository, userId, userModel);
             res.status(200).json(user);
         } catch (err) {
-            const {
-                message,
-            } = err;
-            res.status(400).json({ message });
+            this.returnError(err, res, 400);
         }
+    }
+
+    loginUser = async (req: Request, res: Response) => {
+        try {
+            const {
+                email,
+                password,
+            } = req.body;
+            const user = await loginUserUseCase(this.repository, email, password);
+            res.status(200).json(user);
+        } catch (err) {
+            this.returnError(err, res, 422);
+        }
+    }
+
+    returnError = (err: Error, res: Response, status: number) => {
+        const {
+            message,
+        } = err;
+        res.status(status).json({ message });
     }
 }

@@ -1,5 +1,8 @@
 import mongoose, { Schema } from 'mongoose';
-const UserSchema: Schema = new Schema({
+import bcrypt from 'bcryptjs';
+import UserDTO from '../user.dto';
+
+const userSchema: Schema = new Schema({
     email: {
       type: String,
       required: true,
@@ -12,7 +15,21 @@ const UserSchema: Schema = new Schema({
     lastName: {
       type: String,
       required: true,
-    }
+    },
+    password: {
+      type: String,
+      required: true,
+      minLength: 8,
+    },
   });
-  
-export default UserSchema;
+
+userSchema.pre('save', async function (next) {
+  if (this.isModified('password')) {
+      const currentPassword = this.get('password');
+      const hashedPassword = await bcrypt.hash(currentPassword, 8)
+      this.set('password', hashedPassword);
+  }
+  next();
+})
+
+export default userSchema;

@@ -13,5 +13,7 @@ router.get('/users/:userId', controller.getUser);
 router.post('/users', controller.addUser);
 router.patch('/users/:userId', controller.editUser);
 router.delete('/users/:userId', controller.deleteUser);
+router.post('/users/login', controller.loginUser);
+
 
 export default router;
