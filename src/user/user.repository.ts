@@ -36,7 +36,7 @@ export default class UserRepository implements BaseRepository {
         return userUpdated;
     }
 
-    async findByCredentials(email: string, password: string): Promise<UserDTO|null> {
+    async findByCredentials(email: string, password: string): Promise<UserDTO> {
         const user: UserDTO|null = await this.database.findOne({ email });
         if (!user) {
             throw new Error("Invalid login Credentials");  

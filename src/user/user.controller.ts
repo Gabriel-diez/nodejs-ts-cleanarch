@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import * as jwt from "jsonwebtoken";
 import User from './user.model';
 import {
     getUsersUseCase,
@@ -92,7 +93,12 @@ export default class UserController {
                 password,
             } = req.body;
             const user = await loginUserUseCase(this.repository, email, password);
-            res.status(200).json(user);
+            const token = jwt.sign(
+                { userId: user._id },
+                `${process.env.JWT_KEY}`,
+                { expiresIn: "1h" }
+              );
+            res.status(200).header({ 'access-token': token }).json(user);
         } catch (err) {
             this.returnError(err, res, 422);
         }

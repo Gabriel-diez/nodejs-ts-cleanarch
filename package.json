@@ -8,7 +8,7 @@
     "build": "tsc",
     "watch": "concurrently --kill-others npm:watch-*",
     "watch-ts": "tsc -w",
-    "watch-node": "nodemon dist/server.js"
+    "watch-node": "env-cmd -f ./.env nodemon dist/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +17,7 @@
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mongoose": "^5.7.34",
     "bcryptjs": "^2.4.3",
+    "env-cmd": "^10.1.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.27"
